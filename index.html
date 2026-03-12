@@ -247,35 +247,44 @@
     function closeExercise() { document.getElementById('modal').style.display = 'none'; }
 
     function initTable(verbs) {
-        const container = document.getElementById('tableContainer');
-        const bank = document.getElementById('wordBank');
-        bank.innerHTML = '';
-        let html = `<table><tr><th>Особа</th>`;
-        verbs.forEach(v => html += `<th>${v}</th>`);
+    const container = document.getElementById('tableContainer');
+    const bank = document.getElementById('wordBank');
+    bank.innerHTML = '';
+    
+    // Зменшуємо відступи у банку слів
+    bank.style.padding = "10px";
+    bank.style.gap = "5px";
+
+    let html = `<table style="font-size: 14px; width: 100%;"><tr><th style="padding: 5px;">Особа</th>`;
+    verbs.forEach(v => html += `<th style="padding: 5px;">${v}</th>`);
+    html += `</tr>`;
+
+    let allWords = [];
+    pronouns.forEach((p, pIdx) => {
+        html += `<tr><td style="font-weight:bold; background:#f8f9fa; padding: 4px; font-size: 13px;">${p}</td>`;
+        verbs.forEach(v => {
+            const correct = verbsDB[v][pIdx];
+            allWords.push(correct);
+            // Зменшуємо висоту зони скидання (drop-zone) з 45px до 35px
+            html += `<td style="padding: 2px;"><div class="drop-zone" data-ans="${correct}" ondrop="drop(event)" ondragover="allowDrop(event)" style="height: 35px; font-size: 14px;"></div></td>`;
+        });
         html += `</tr>`;
+    });
+    container.innerHTML = html + `</table>`;
 
-        let allWords = [];
-        pronouns.forEach((p, pIdx) => {
-            html += `<tr><td style="font-weight:bold; background:#f8f9fa">${p}</td>`;
-            verbs.forEach(v => {
-                const correct = verbsDB[v][pIdx];
-                allWords.push(correct);
-                html += `<td><div class="drop-zone" data-ans="${correct}" ondrop="drop(event)" ondragover="allowDrop(event)"></div></td>`;
-            });
-            html += `</tr>`;
-        });
-        container.innerHTML = html + `</table>`;
-
-        allWords.sort(() => Math.random() - 0.5).forEach((w, i) => {
-            const div = document.createElement('div');
-            div.className = 'word';
-            div.draggable = true;
-            div.id = 'w-' + i;
-            div.textContent = w;
-            div.ondragstart = (e) => e.dataTransfer.setData("text", e.target.id);
-            bank.appendChild(div);
-        });
-    }
+    allWords.sort(() => Math.random() - 0.5).forEach((w, i) => {
+        const div = document.createElement('div');
+        div.className = 'word';
+        // Зменшуємо розмір плашок зі словами
+        div.style.padding = "5px 10px";
+        div.style.fontSize = "13px";
+        div.draggable = true;
+        div.id = 'w-' + i;
+        div.textContent = w;
+        div.ondragstart = (e) => e.dataTransfer.setData("text", e.target.id);
+        bank.appendChild(div);
+    });
+}
 
     function allowDrop(ev) { ev.preventDefault(); }
     function drop(ev) {
