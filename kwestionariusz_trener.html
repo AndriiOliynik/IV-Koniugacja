@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інтерактивний тренажер: Kwestionariusz Osobowy</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #2980b9;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --success: #27ae60;
+            --danger: #c0392b;
+            --warning: #f39c12;
+            --text: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            color: var(--primary);
+            margin: 0 0 10px 0;
+            font-size: 26px;
+        }
+
+        header p {
+            color: #666;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .section-title {
+            background: var(--secondary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            padding: 12px;
+            background: #fafafa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group:hover {
+            border-color: var(--accent);
+            background: #fff;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 250px;
+            padding: 10px 12px;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        .hint-btn {
+            background: #e0e0e0;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            color: #444;
+            transition: background 0.2s;
+        }
+
+        .hint-btn:hover {
+            background: #d0d0d0;
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: #ebf5fb;
+            border-left: 4px solid var(--accent);
+            border-radius: 4px;
+            font-size: 13.5px;
+            color: #2c3e50;
+        }
+
+        .feedback {
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .feedback.valid { color: var(--success); }
+        .feedback.invalid { color: var(--danger); }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.1s, opacity 0.2s;
+            min-width: 180px;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-check { background: var(--success); color: white; }
+        .btn-fill { background: var(--accent); color: white; }
+        .btn-reset { background: #7f8c8d; color: white; }
+
+        .btn:hover { opacity: 0.9; }
+
+        #summaryModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 12px;
+            max-width: 650px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .document-preview {
+            border: 2px dashed #bdc3c7;
+            padding: 20px;
+            background: #fdfdfd;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-top: 15px;
+        }
+
+        .document-preview h3 {
+            text-align: center;
+            font-family: 'Segoe UI', sans-serif;
+            margin-top: 0;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <header>
+        <h1>Kwestionariusz Osobowy</h1>
+        <p>Інтерактивний тренажер для вивчення польської офіційної лексики та заповнення персональних анкет.</p>
+    </header>
+
+    <form id="questForm" onsubmit="return false;">
+
+        <!-- БЛОК 1: ОСНОВНІ ДАНІ -->
+        <div class="section-title">1. Dane podstawowe (Основні дані)</div>
+
+        <div class="form-group">
+            <label for="field1">Imię (imiona) i nazwisko:</label>
+            <div class="input-row">
+                <input type="text" id="field1" placeholder="np. Jan Piotr Nowak lub Anna Kowalska">
+                <button type="button" class="hint-btn" onclick="toggleHint('hint1')">💡 Пояснення</button>
+            </div>
+            <div class="explanation" id="hint1">
+                <strong>Правило:</strong> Спочатку пишеться ім'я (або два імені), а потім прізвище. Усі власні назви пишуться з великої літери. <br>
+                <em>Приклад:</em> Jan, Anna Maria, Kowalski, Nowak-Wiśniewska.
+            </div>
+            <span class="feedback" id="fb1"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="field2">Nazwisko rodowe:</label>
+            <div class="input-row">
+                <input type="text" id="field2" placeholder="np. Wiśniewska lub brak">
+                <button type="button" class="hint-btn" onclick="toggleHint('hint2')">💡 Пояснення</button>
+            </div>
+            <div class="explanation" id="hint2">
+                <strong>Правило:</strong> Дівоче (родове) прізвище до шлюбу. Якщо воно не змінювалося або ви чоловік і не змінювали прізвище, можна вказати поточне прізвище або написати <em>brak</em> / <em>takie samo</em>.
+            </div>
+            <span class="feedback" id="fb2"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="field3">Data i miejsce urodzenia:</label>
+            <div class="input-row">
+                <input type="text" id="field3" placeholder="np. 15.05.1995 r., Warszawa">
+                <button type="button" class="hint-btn" onclick="toggleHint('hint3')">💡 Пояснення</button>
+            </div>
+            <div class="explanation" id="hint3">
+                <strong>Правило:</strong> Вказується дата (у форматі ДД.ММ.РРРР або прописом) та місто/країна народження. <br>
+                <em>Приклад:</em> 12.04.1990 r., Kraków / 15 maja 1998, Kijów.
+            </div>
+            <span class="feedback" id="fb3"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="field4">Obywatelstwo:</label>
+            <div class="input-row">
+                <input type="text" id="field4" placeholder="np. polskie, ukraińskie">
+                <button type="button" class="hint-btn" onclick="toggleHint('hint4')">💡 Пояснення</button>
+            </div>
+            <div class="explanation" id="hint4">
+                <strong>Правило:</strong> Громадянство. У польській мові пишеться з малої літери як прикметник середнього роду (bo <em>to obywatelstwo</em>). <br>
+                <em>Приклад:</em> polskie, ukraińskie, niemieckie.
+            </div>
+            <span class="feedback" id="fb4"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="field5">Narodowość:</label>
+            <div class="input-row">
+                <input type="text" id="field5" placeholder="np. polska, ukraińska">
+                <button type="button" class="hint-btn" onclick="toggleHint('hint5')">💡 Пояснення</button>
+            </div>
+            <div class="explanation" id="hint5">
+                <strong>Правило:</strong> Національність. Пишеться з малої літери як прикметник жіночого роду (bo <em>ta narodowość</em>). <br>
+                <em>Приклад:</em> polska, ukraińska.
+            </div>
+            <span class="feedback" id="fb5"></span>
+        </div>
+
+        <!-- БЛОК 2: АДРЕСА ТА КОНТАКТИ -->
+        <div class="section-title">2. Adres i kontakt (Адреса та контакти)</div>
+
+        <div class="form-group">
+            <label for="field6">Adres stałego zamieszkania:</label>
+            <div class="input-row">
+                <input type="text" id="field6" placeholder="np. ul. Długa 5 m. 12, 00-001 Warszawa">
+                <button type="button" class="hint-btn" onclick="toggleHint('hint6')">💡 Пояснення</button>
+            </div>
+            <div class="explanation" id="hint6">
+                <strong>Правило:</strong> Адреса постійного проживання. Використовуйте скорочення: <em>ul.</em> (ulica), <em>al.</em> (aleja), <em>m.</em> / <em>lok.</em> (mieszkanie / lokal). Обов'язковий поштовий індекс (XX-XXX).
+            </div>
+            <span class="feedback" id="fb6"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="field7">Adres do korespondencji:</label>
+            <div class="input-row">
+                <input type="text" id="field7" placeholder="np. taki sam jak wyżej lub inny adres">
+                <button type="button" class="hint-btn" onclick="toggleHint('hint7')">💡 Пояснення</button>
+            </div>
+            <div class="explanation" id="hint7">
+                <strong>Правило:</strong> Адреса для листування. Якщо збігається з постійною, пишуть: <em>taki sam jak wyżej</em>, <em>j.w.</em> (jak wyżej) або повторюють адресу.
+            </div>
+            <span class="feedback" id="fb7"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="field8">Telefon kontaktowy / Adres e-mail:</label>
+            <div class="input-row">
+                <input type="text" id="field8" placeholder="np. +48 123 456 789, jan.nowak@email.com">
+                <button type="button" class="hint-btn" onclick="toggleHint('hint8')">💡 Пояснення</button>
+            </div>
+            <div class="explanation" id="hint8">
+                <strong>Правило:</strong> Номер телефону (бажано з кодом країни, наприклад +48) та коректний e-mail.
+            </div>
+            <span class="feedback" id="fb8"></span>
+        </div>
+
+        <!-- БЛОК 3: ОСВІТА ТА ПРОФЕСІЯ -->
+        <div class="section-title">3. Wykształcenie i praca (Освіта та робота)</div>
+
+        <div class="form-group">
+            <label for="field9">Wykształcenie:</label>
+            <div class="input-row">
+                <input type="text" id="field9" placeholder="np. wyższe, średnie, zawodowe, podstawowe">
+                <button type="button" class="hint-btn" onclick="toggleHint('hint9')">💡 Пояснення</button>
+            </div>
+            <div class="explanation" id="hint9">
+                <strong>Правило:</strong> Рівень освіти (прикметник середнього роду): <br>
+                • <em>wyższe</em> — вища <br>
+                • <em>średnie</em> — середня <br>
+                • <em>zawodowe</em> — професійна <br>
+                • <em>podstawowe</em> — базова/початкова
+            </div>
+            <span class="feedback" id="fb9"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="field10">Zawód wyuczony / Zawód wykonywany:</label>
+            <div class="input-row">
+                <input type="text" id="field10" placeholder="np. wyuczony: ekonomista, wykonywany: rekruter / specjalista ds. HR">
+                <button type="button" class="hint-btn" onclick="toggleHint('hint10')">💡 Пояснення</button>
+            </div>
+            <div class="explanation" id="hint10">
+                <strong>Правило:</strong> <br>
+                • <em>Zawód wyuczony</em> — спеціальність за дипломом або здобутою освітою. <br>
+                • <em>Zawód wykonywany</em> — фактична професія або посада за місцем роботи. <br><br>
+                <strong>Приклади популярних професій (фінанси, менеджмент, HR):</strong> <br>
+                • <strong>Спеціаліст з кадрів / HR:</strong> <em>specjalista ds. kadr i płac</em> / <em>specjalista ds. HR</em> (для жінок: <em>specjalistka ds. kadr</em>) <br>
+                • <strong>Рекрутер:</strong> <em>rekruter</em> (ч) / <em>rekruterka</em> (ж) або <em>specjalista ds. rekrutacji</em> <br>
+                • <strong>Пошуковець талантів:</strong> <em>specjalista ds. pozyskiwania talentów</em> / <em>Talent Acquisition Specialist</em> <br>
+                • <strong>Економіст:</strong> <em>ekonomista</em> (ч) / <em>ekonomistka</em> (ж) <br>
+                • <strong>Менеджер:</strong> <em>menedżer</em> / <em>manager</em> / <em>kierownik</em> (ч) / <em>kierowniczka</em> (ж) <br>
+                • <strong>Бухгалтер:</strong> <em>księgowy</em> (ч) / <em>księgowa</em> (ж) / <em>główny księgowy</em> <br>
+                • <strong>Фінансовий контролер:</strong> <em>kontroler finansowy</em> (ч) / <em>kontrolerka finansowa</em> (ж) <br>
+                • <strong>Фінансовий аналітик:</strong> <em>analityk finansowy</em> (ч) / <em>analityczka finansowa</em> (ж)
+            </div>
+            <span class="feedback" id="fb10"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="field11">Uczelnia / Wydział / Kierunek:</label>
+            <div class="input-row">
+                <input type="text" id="field11" placeholder="np. Szkoła Główna Handlowa / Zarządzanie / Zarządzanie Zasobami Ludzkimi">
+                <button type="button" class="hint-btn" onclick="toggleHint('hint11')">💡 Пояснення</button>
+            </div>
+            <div class="explanation" id="hint11">
+                <strong>Правило:</strong> Назва закладу вищої освіти (Uczelnia), факультету (Wydział) та напряму підготовки (Kierunek). <br><br>
+                <strong>Приклади для економічних та HR-напрямків:</strong> <br>
+                • <em>Szkoła Główna Handlowa w Warszawie / Wydział Zarządzania / Zarządzanie Zasobami Ludzkimi (ZZL)</em> <br>
+                • <em>Uniwersytet Ekonomiczny w Krakowie / Wydział Zarządzania / Finanse i Rachunkowość</em> <br>
+                • <em>Uniwersytet Warszawski / Wydział Nauk Ekonomicznych / Analityka Gospodarcza</em>
+            </div>
+            <span class="feedback" id="fb11"></span>
+        </div>
+
+        <!-- БЛОК 4: ДОДАТКОВІ НАВИЧКИ ТА СТАН -->
+        <div class="section-title">4. Dodatkowe informacje (Додаткова інформація)</div>
+
+        <div class="form-group">
+            <label for="field12">Języki obce:</label>
+            <div class="input-row">
+                <input type="text" id="field12" placeholder="np. angielski (C1 - biegły), niemiecki (B1 - średnio zaawansowany)">
+                <button type="button" class="hint-btn" onclick="toggleHint('hint12')">💡 Пояснення</button>
+            </div>
+            <div class="explanation" id="hint12">
+                <strong>Правило:</strong> Вказується мова та рівень володіння. Можна використовувати шкалу CEFR (A1–C2) або описові терміни польською мовою: <br><br>
+                <strong>Рівні за шкалою CEFR:</strong> <br>
+                • <strong>A1 / A2</strong> — <em>podstawowy</em> (початковий / елементарний) <br>
+                • <strong>B1 / B2</strong> — <em>średnio zaawansowany</em> (середній / вище середнього) <br>
+                • <strong>C1 / C2</strong> — <em>zaawansowany / biegły</em> (просунутий / вільний) <br>
+                • <strong>Ojczysty / Natywny</strong> — <em>język ojczysty / native speaker</em> (рідна мова) <br><br>
+                <em>Приклади запису:</em> <br>
+                • <em>język angielski – C1 (biegły), język niemiecki – B1 (średnio zaawansowany)</em> <br>
+                • <em>angielski (zaawansowany), polski (biegły), ukraiński (ojczysty)</em>
+            </div>
+            <span class="feedback" id="fb12"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="field13">Stan cywilny:</label>
+            <div class="input-row">
+                <input type="text" id="field13" placeholder="np. panna, kawaler, zamężna, żonaty">
+                <button type="button" class="hint-btn" onclick="toggleHint('hint13')">💡 Пояснення</button>
+            </div>
+            <div class="explanation" id="hint13">
+                <strong>Правило:</strong> Сімейний стан залежить від статі: <br>
+                • Жінки: <em>panna</em> (незаміжня), <em>zamężna</em> (заміжня), <em>rozwiedziona</em> (розлучена), <em>wdowa</em> (вдова). <br>
+                • Чоловіки: <em>kawaler</em> (неодружений), <em>żonaty</em> (одружений), <em>rozwiedziony</em> (розлучений), <em>wdowiec</em> (удовець).
+            </div>
+            <span class="feedback" id="fb13"></span>
+        </div>
+
+        <!-- КНОПКИ ДІЙ -->
+        <div class="btn-container">
+            <button type="button" class="btn btn-check" onclick="checkAnswers()">Перевірити відповіді ✔</button>
+            <button type="button" class="btn btn-fill" onclick="autoFill()">Заповнити зразком ✍️</button>
+            <button type="button" class="btn btn-reset" onclick="resetForm()">Очистити 🔄</button>
+        </div>
+
+    </form>
+</div>
+
+<!-- МОДАЛЬНЕ ВІКНО ПЕРЕГЛЯДУ ДОКУМЕНТА -->
+<div id="summaryModal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h2 style="color: var(--primary); text-align: center;">Результат заповнення</h2>
+        <p id="modalStatus" style="text-align: center; font-weight: bold;"></p>
+
+        <div class="document-preview" id="docPreview">
+            <!-- Сюди формується готовий Kwestionariusz -->
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleHint(id) {
+        const hint = document.getElementById(id);
+        if (hint) {
+            hint.style.display = (hint.style.display === 'block') ? 'none' : 'block';
+        }
+    }
+
+    const sampleData = {
+        field1: "Anna Maria Kowalska",
+        field2: "Wiśniewska",
+        field3: "15.05.1995 r., Warszawa",
+        field4: "polskie",
+        field5: "polska",
+        field6: "ul. Marszałkowska 10/15, 00-001 Warszawa",
+        field7: "taki sam jak adres stałego zamieszkania",
+        field8: "+48 601 234 567, anna.kowalska@email.com",
+        field9: "wyższe",
+        field10: "wyuczony: socjolog, wykonywany: specjalista ds. pozyskiwania talentów (rekruter)",
+        field11: "Szkoła Główna Handlowa w Warszawie / Wydział Zarządzania / Zarządzanie Zasobami Ludzkimi",
+        field12: "angielski (C1 - biegły), niemiecki (B1 - średnio zaawansowany), ukraiński (ojczysty)",
+        field13: "panna"
+    };
+
+    function autoFill() {
+        for (let i = 1; i <= 13; i++) {
+            const input = document.getElementById(`field${i}`);
+            if (input) {
+                input.value = sampleData[`field${i}`];
+                document.getElementById(`fb${i}`).innerText = '';
+                input.style.borderColor = '#ccc';
+            }
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('questForm').reset();
+        for (let i = 1; i <= 13; i++) {
+            const fb = document.getElementById(`fb${i}`);
+            const input = document.getElementById(`field${i}`);
+            if (fb) fb.innerText = '';
+            if (input) input.style.borderColor = '#ccc';
+        }
+    }
+
+    function checkAnswers() {
+        let validCount = 0;
+        const total = 13;
+
+        // Поле 1: Ім'я та прізвище
+        const f1 = document.getElementById('field1').value.trim();
+        if (f1.length >= 5 && f1.includes(' ')) {
+            setValid('fb1', 'field1', '✅ Чудово! Вказано ім\'я та прізвище.');
+            validCount++;
+        } else {
+            setInvalid('fb1', 'field1', '❌ Вкажіть ім\'я ТА прізвище (напр. Jan Nowak).');
+        }
+
+        // Поле 2: Родове прізвище
+        const f2 = document.getElementById('field2').value.trim();
+        if (f2.length >= 3) {
+            setValid('fb2', 'field2', '✅ Вірно заповнено.');
+            validCount++;
+        } else {
+            setInvalid('fb2', 'field2', '❌ Вкажіть прізвище або "brak".');
+        }
+
+        // Поле 3: Дата і місце
+        const f3 = document.getElementById('field3').value.trim();
+        if (f3.length >= 6) {
+            setValid('fb3', 'field3', '✅ Вірно заповнено.');
+            validCount++;
+        } else {
+            setInvalid('fb3', 'field3', '❌ Вкажіть дату і місто (напр. 12.05.1995, Kraków).');
+        }
+
+        // Поле 4: Громадянство
+        const f4 = document.getElementById('field4').value.trim().toLowerCase();
+        if (['polskie', 'ukraińskie', 'podwójne', 'niemieckie', 'białoruskie'].some(v => f4.includes(v))) {
+            setValid('fb4', 'field4', '✅ Правильна форма прикметника (np. polskie).');
+            validCount++;
+        } else {
+            setInvalid('fb4', 'field4', '⚠️ Вкажіть громадянство польською (np. polskie, ukraińskie).');
+        }
+
+        // Поле 5: Національність
+        const f5 = document.getElementById('field5').value.trim().toLowerCase();
+        if (['polska', 'ukraińska', 'niemiecka', 'białoruska'].some(v => f5.includes(v))) {
+            setValid('fb5', 'field5', '✅ Правильна форма прикметника (np. polska).');
+            validCount++;
+        } else {
+            setInvalid('fb5', 'field5', '⚠️ Вкажіть національність польською (np. polska, ukraińska).');
+        }
+
+        // Поле 6: Адреса
+        const f6 = document.getElementById('field6').value.trim();
+        if (f6.length >= 8) {
+            setValid('fb6', 'field6', '✅ Адреса прийнята.');
+            validCount++;
+        } else {
+            setInvalid('fb6', 'field6', '❌ Вкажіть повну адресу (вулиця, номер, місто).');
+        }
+
+        // Поле 7: Адреса для листування
+        const f7 = document.getElementById('field7').value.trim();
+        if (f7.length >= 3) {
+            setValid('fb7', 'field7', '✅ Вірно.');
+            validCount++;
+        } else {
+            setInvalid('fb7', 'field7', '❌ Впишіть адресу або "taki sam".');
+        }
+
+        // Поле 8: Контакти
+        const f8 = document.getElementById('field8').value.trim();
+        if (f8.length >= 6 && (f8.includes('@') || /\d/.test(f8))) {
+            setValid('fb8', 'field8', '✅ Контакти вказано.');
+            validCount++;
+        } else {
+            setInvalid('fb8', 'field8', '❌ Вкажіть телефон або e-mail.');
+        }
+
+        // Поле 9: Освіта
+        const f9 = document.getElementById('field9').value.trim().toLowerCase();
+        if (['wyższe', 'średnie', 'zawodowe', 'podstawowe', 'podyplomowe'].some(v => f9.includes(v))) {
+            setValid('fb9', 'field9', '✅ Термін вжито правильно.');
+            validCount++;
+        } else {
+            setInvalid('fb9', 'field9', '⚠️ Використовуйте: wyższe, średnie, zawodowe або podstawowe.');
+        }
+
+        // Поле 10: Професія
+        const f10 = document.getElementById('field10').value.trim();
+        if (f10.length >= 3) {
+            setValid('fb10', 'field10', '✅ Вірно.');
+            validCount++;
+        } else {
+            setInvalid('fb10', 'field10', '❌ Заповніть фах/професію.');
+        }
+
+        // Поле 11: Навчальний заклад
+        const f11 = document.getElementById('field11').value.trim();
+        if (f11.length >= 3) {
+            setValid('fb11', 'field11', '✅ Вірно.');
+            validCount++;
+        } else {
+            setInvalid('fb11', 'field11', '❌ Заповніть дані про навчання/вуз.');
+        }
+
+        // Поле 12: Мови
+        const f12 = document.getElementById('field12').value.trim();
+        if (f12.length >= 3) {
+            setValid('fb12', 'field12', '✅ Вірно.');
+            validCount++;
+        } else {
+            setInvalid('fb12', 'field12', '❌ Вкажіть іноземні мови.');
+        }
+
+        // Поле 13: Сімейний стан
+        const f13 = document.getElementById('field13').value.trim().toLowerCase();
+        const validStates = ['panna', 'kawaler', 'zamężna', 'żonaty', 'rozwiedziona', 'rozwiedziony', 'wdowa', 'wdowiec'];
+        if (validStates.some(v => f13.includes(v))) {
+            setValid('fb13', 'field13', '✅ Термін сімейного стану вжито вірно.');
+            validCount++;
+        } else {
+            setInvalid('fb13', 'field13', '⚠️ Вкажіть: panna, kawaler, zamężna, żonaty, rozwiedziona/y.');
+        }
+
+        showPreviewModal(validCount, total);
+    }
+
+    function setValid(fbId, fieldId, text) {
+        const fb = document.getElementById(fbId);
+        fb.innerText = text;
+        fb.className = 'feedback valid';
+        document.getElementById(fieldId).style.borderColor = 'var(--success)';
+    }
+
+    function setInvalid(fbId, fieldId, text) {
+        const fb = document.getElementById(fbId);
+        fb.innerText = text;
+        fb.className = 'feedback invalid';
+        document.getElementById(fieldId).style.borderColor = 'var(--danger)';
+    }
+
+    function showPreviewModal(validCount, total) {
+        const modal = document.getElementById('summaryModal');
+        const status = document.getElementById('modalStatus');
+        const preview = document.getElementById('docPreview');
+
+        if (validCount === total) {
+            status.innerHTML = `<span style="color:var(--success)">🎉 Чудово! Всі ${total} полів заповнено правильно!</span>`;
+        } else {
+            status.innerHTML = `<span style="color:var(--warning)">⚠️ Заповнено правильно: ${validCount} з ${total} полів. Перевірте підказки червоного кольору!</span>`;
+        }
+
+        preview.innerHTML = `
+            <h3>KWESTIONARIUSZ OSOBOWY</h3>
+            <hr>
+            <b>1. Imię i nazwisko:</b> ${document.getElementById('field1').value || '---'}<br>
+            <b>2. Nazwisko rodowe:</b> ${document.getElementById('field2').value || '---'}<br>
+            <b>3. Data i miejsce urodzenia:</b> ${document.getElementById('field3').value || '---'}<br>
+            <b>4. Obywatelstwo:</b> ${document.getElementById('field4').value || '---'}<br>
+            <b>5. Narodowość:</b> ${document.getElementById('field5').value || '---'}<br>
+            <b>6. Adres zamieszkania:</b> ${document.getElementById('field6').value || '---'}<br>
+            <b>7. Adres do korespondencji:</b> ${document.getElementById('field7').value || '---'}<br>
+            <b>8. Telefon / E-mail:</b> ${document.getElementById('field8').value || '---'}<br>
+            <b>9. Wykształcenie:</b> ${document.getElementById('field9').value || '---'}<br>
+            <b>10. Zawód wyuczony / wykonywany:</b> ${document.getElementById('field10').value || '---'}<br>
+            <b>11. Uczelnia / Wydział / Kierunek:</b> ${document.getElementById('field11').value || '---'}<br>
+            <b>12. Języki obce:</b> ${document.getElementById('field12').value || '---'}<br>
+            <b>13. Stan cywilny:</b> ${document.getElementById('field13').value || '---'}<br>
+        `;
+
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('summaryModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('summaryModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
+</script>
+
+</body>
+</html>

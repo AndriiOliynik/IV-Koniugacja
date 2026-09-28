@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Іменники та Прикметники: Imię, Imiona, Osobowy / Osobowe</title>
+    <style>
+        :root { 
+            --primary: #9b59b6; 
+            --secondary: #2c3e50; 
+            --bg: #f4f7f6; 
+            --success: #27ae60; 
+            --blue: #3498db; 
+            --gold: #f1c40f; 
+            --danger: #e74c3c;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; line-height: 1.6; }
+        
+        header { background: var(--secondary); color: white; padding: 40px 20px; text-align: center; border-bottom: 5px solid var(--primary); }
+        .container { max-width: 1000px; margin: -40px auto 40px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        
+        .theory-box { background: #f3e9f9; border-left: 5px solid var(--primary); padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .full-list-box { background: #eef2f7; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #d1d9e6; }
+        .suffix { color: var(--danger); font-weight: bold; }
+
+        .word-selection { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 25px 0; }
+        .word-item { display: flex; align-items: center; background: #f9f9f9; padding: 12px; border-radius: 8px; cursor: pointer; border: 1px solid #eee; transition: 0.2s; }
+        .word-item:hover { border-color: var(--primary); background: #fff; }
+        .word-item input { margin-right: 12px; width: 18px; height: 18px; cursor: pointer; }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .btn-main { flex: 2; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; transition: 0.3s; min-width: 250px; }
+        .btn-random { flex: 1; background: var(--success); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; min-width: 150px; }
+        .btn-challenge { flex: 1; background: var(--gold); color: #333; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; min-width: 150px; }
+        .btn-blue { flex: 1; background: var(--blue); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; min-width: 150px; transition: 0.3s; }
+        .btn-quiz { flex: 1; background: #8e44ad; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; min-width: 150px; }
+        
+        .btn-main:hover, .btn-random:hover, .btn-challenge:hover, .btn-blue:hover, .btn-quiz:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        #modal, #modalEx1, #modalEx2, #modalEx3, #modalQuiz { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; }
+        .modal-content { background: white; width: 95%; max-width: 1100px; margin: 30px auto; padding: 25px; border-radius: 15px; height: 85vh; overflow-y: auto; position: relative; }
+        .close-btn { position: absolute; right: 20px; top: 10px; font-size: 35px; cursor: pointer; color: #666; }
+
+        .word-bank { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; padding: 15px; background: #f0f2f5; border-radius: 10px; min-height: 50px; justify-content: center; }
+        .word { padding: 6px 14px; background: white; border: 2px solid var(--primary); border-radius: 20px; cursor: grab; font-weight: 500; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .word.hidden { visibility: hidden; }
+        
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th { background: var(--secondary); color: white; padding: 12px; font-size: 14px; }
+        td { border: 1px solid #dee2e6; padding: 8px; text-align: center; }
+        .drop-zone { height: 38px; border: 1px dashed #ccc; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .correct { background: #d4edda !important; border: 2px solid var(--success) !important; font-weight: bold; }
+        .wrong { background: #f8d7da !important; border: 2px solid var(--danger) !important; }
+
+        .music-section { margin-top: 40px; padding: 20px; background: #eef2f7; border-radius: 12px; }
+        .song-link { display: block; margin: 10px 0; color: var(--blue); text-decoration: none; font-weight: 500; }
+        .song-link:hover { text-decoration: underline; }
+        .song-link:before { content: "🎧 "; }
+
+        #challengeDisplay { margin-top: 20px; padding: 15px; background: #fff9e6; border: 2px dashed var(--gold); border-radius: 10px; display: none; text-align: center; font-size: 18px; font-weight: bold; color: #5d4037; }
+
+        .ex-item { margin-bottom: 18px; font-size: 17px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: #fafafa; padding: 10px 15px; border-radius: 8px; border: 1px solid #eee; }
+        .ex-input { padding: 8px; border: 2px solid #ddd; border-radius: 6px; width: 140px; font-size: 16px; text-align: center; }
+        .ex-select { padding: 8px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; background: white; cursor: pointer; }
+        .ex-input:focus, .ex-select:focus { border-color: var(--blue); outline: none; }
+        .check-btn { background: var(--secondary); color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; font-weight: bold; font-size: 16px; transition: 0.2s; }
+        .check-btn:hover { background: #1a252f; }
+        .feedback-icon { font-weight: bold; margin-left: 8px; }
+
+        .option-btn { display: inline-block; padding: 6px 12px; margin: 3px; border: 2px solid #ddd; background: white; border-radius: 6px; cursor: pointer; font-size: 15px; transition: 0.2s; }
+        .option-btn:hover { border-color: var(--blue); background: #f0f8ff; }
+        .option-btn.selected { border-color: var(--primary); background: #f3e9f9; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Граматика іменників та прикметників: Imię & Osobowy</h1>
+    <h2>Практикум відмінювання іменників серії <i>-ię</i> та узгодження прикметників <i>osobowy / osobowe / osobowi</i></h2>
+    <p>Навчися правильно використовувати відмінкові закінчення у щоденній та офіційній польській мові!</p>
+</header>
+
+<div class="container">
+    <div class="theory-box">
+        <h2>💡 Основне граматичне правило</h2>
+        <p><strong>1. Іменник <i>imię</i> (ім'я)</strong> належить до середнього роду та має особливе відмінювання з нарощенням кореня <strong>-en-</strong> у непрямих відмінках:</p>
+        <div class="full-list-box">
+            • <strong>Однина (Liczba pojedyncza):</strong> M. imię, D. imi<strong>enia</strong>, C. imi<strong>eniu</strong>, B. imię, N. imi<strong>eniem</strong>, Ms. o imi<strong>eniu</strong>.<br>
+            • <strong>Множина (Liczba mnoga):</strong> M. imi<strong>ona</strong>, D. imi<strong>on</strong>, C. imi<strong>onom</strong>, B. imi<strong>ona</strong>, N. imi<strong>onami</strong>, Ms. o imi<strong>onach</strong>.
+        </div>
+        <p><strong>2. Прикметники <i>osobowy / osobowe / osobowi</i>:</strong></p>
+        <div class="full-list-box">
+            • <strong>Osobowy:</strong> Чоловічий рід (dowód <i>osobowy</i>, kwestionariusz <i>osobowy</i>).<br>
+            • <strong>Osobowe:</strong> Середній рід, жіночий рід або нечоловічо-особова множина (imię <i>osobowe</i>, dane <i>osobowe</i>, samochody <i>osobowe</i>).<br>
+            • <strong>Osobowi:</strong> Чоловічо-особова множина (doradcy <i>osobowi</i>, trenerzy <i>osobowi</i>).
+        </div>
+    </div>
+
+    <h3>Оберіть слова для інтерактивної таблиці:</h3>
+    <div class="word-selection" id="wordSelect">
+        <label class="word-item"><input type="checkbox" value="imię" checked> <strong>imię</strong> (однина)</label>
+        <label class="word-item"><input type="checkbox" value="imiona" checked> <strong>imiona</strong> (множина)</label>
+        <label class="word-item"><input type="checkbox" value="dowód osobowy" checked> <strong>dowód osobowy</strong></label>
+        <label class="word-item"><input type="checkbox" value="dane osobowe"> <strong>dane osobowe</strong></label>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn-main" onclick="openExercise()">Почати Drag-and-Drop таблицю →</button>
+        <button class="btn-random" onclick="randomExercise()">🎲 Випадковий вибір</button>
+        <button class="btn-challenge" onclick="generateChallenge()">🔥 Генератор речень</button>
+        <button class="btn-blue" onclick="toggleModal('modalEx1', true)">📝 Вправа 1: Впиши imię/imiona</button>
+        <button class="btn-blue" onclick="toggleModal('modalEx2', true)">📝 Вправа 2: Впиши osobowy/e</button>
+        <button class="btn-blue" style="background:#27ae60;" onclick="toggleModal('modalEx3', true)">🎯 Вправа 3: Тест закінчень</button>
+        <button class="btn-quiz" onclick="openQuiz()">⚡ Швидкий Квіз</button>
+    </div>
+
+    <div id="challengeDisplay"></div>
+
+    <div class="music-section">
+        <h3>🎧 Практика польської мови у контексті:</h3>
+        <a href="https://www.youtube.com/watch?v=ZuHakRzq5yE" target="_blank" class="song-link">Популярна польська музика для покращення сприйняття мови</a>
+        <a href="https://www.youtube.com/watch?v=n3Hv-1MWz2Y" target="_blank" class="song-link">Enej - Слухаємо лексику та відмінкові закінчення</a>
+    </div>
+</div>
+
+<!-- Modal 1: Drag and Drop -->
+<div id="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeExercise()">&times;</span>
+        <h2 id="modalTitle">Тренажер відмінювання за відмінками</h2>
+        <div class="word-bank" id="wordBank"></div>
+        <div id="tableContainer" style="overflow-x: auto;"></div>
+    </div>
+</div>
+
+<!-- Modal Ex 1: Вписати imię / imiona -->
+<div id="modalEx1">
+    <div class="modal-content">
+        <span class="close-btn" onclick="toggleModal('modalEx1', false)">&times;</span>
+        <h2>Вправа 1: Впишіть слово "imię" у правильній формі</h2>
+        <p><i>Впишіть потрібну форму (imię, imienia, imieniu, imieniem, imiona, imion, imionom, imionami, imionach):</i></p>
+        <div id="ex1List"></div>
+        <button class="check-btn" onclick="checkEx1()">Перевірити відповіді</button>
+    </div>
+</div>
+
+<!-- Modal Ex 2: Вписати osobowy / osobowe / osobowi -->
+<div id="modalEx2">
+    <div class="modal-content">
+        <span class="close-btn" onclick="toggleModal('modalEx2', false)">&times;</span>
+        <h2>Вправа 2: Впишіть прикметник osobowy / osobowe / osobowi / osobowych</h2>
+        <p><i>Узгодьте прикметник з іменником:</i></p>
+        <div id="ex2List"></div>
+        <button class="check-btn" onclick="checkEx2()">Перевірити відповіді</button>
+    </div>
+</div>
+
+<!-- Modal Ex 3: Тестовий варіант для схожих закінчень -->
+<div id="modalEx3">
+    <div class="modal-content">
+        <span class="close-btn" onclick="toggleModal('modalEx3', false)">&times;</span>
+        <h2>Вправа 3: Тестовий вибір (Оберіть правильне закінчення/форму)</h2>
+        <p><i>Оберіть правильний варіант серед схожих закінчень:</i></p>
+        <div id="ex3List"></div>
+        <button class="check-btn" onclick="checkEx3()">Перевірити відповіді</button>
+    </div>
+</div>
+
+<!-- Modal Quiz -->
+<div id="modalQuiz">
+    <div class="modal-content" style="max-width: 600px;">
+        <span class="close-btn" onclick="document.getElementById('modalQuiz').style.display='none'">&times;</span>
+        <h2 style="text-align:center">Граматичний квіз</h2>
+        <div id="quizContainer"></div>
+    </div>
+</div>
+
+<script>
+    // База даних відмінювання
+    const wordsDB = {
+        'imię': ['imię', 'imienia', 'imieniu', 'imię', 'imieniem', 'imieniu'],
+        'imiona': ['imiona', 'imion', 'imionom', 'imiona', 'imionami', 'imionach'],
+        'dowód osobowy': ['dowód osobowy', 'dowodu osobistego', 'dowodowi osobistemu', 'dowód osobowy', 'dowodem osobistym', 'dowodzie osobistym'],
+        'dane osobowe': ['dane osobowe', 'danych osobowych', 'danym osobowym', 'dane osobowe', 'danymi osobowymi', 'danych osobowych']
+    };
+
+    const cases = ['Mianownik (Kto? Co?)', 'Dopełniacz (Kogo? Czego?)', 'Celownik (Komu? Czemu?)', 'Biernik (Kogo? Co?)', 'Narzędnik (Z kim? Z czym?)', 'Miejscownik (O kim? O czym?)'];
+
+    // Вправа 1: Вписування форм imię/imiona
+    const dataEx1 = [
+        { q: "Mam problem z zapamiętywaniem ...", a: "imion" },
+        { q: "Po tym wszystkim nie odzyska już dobrego ...", a: "imienia" },
+        { q: "Znam wiele osób o tym samym ... i nazwisku.", a: "imieniu" },
+        { q: "Na tablicy były wypisane ... naszych kolegów.", a: "imiona" },
+        { q: "Podpisałem list oficjalny ... i nazwiskiem.", a: "imieniem" },
+        { q: "Naszyjniki z ... są bardzo modne w tym sezonie.", a: "imionami" },
+        { q: "Przypomnijmy sobie wszystkie ... naszych ulubionych pisarzy.", a: "imiona" },
+        { q: "Jak masz na ...?", a: "imię" }
+    ];
+
+    // Вправа 2: Вписування прикметників osobowy/osobowe
+    const dataEx2 = [
+        { q: "Muszę wykonać weryfikację danych (osobowy) ... .", a: "osobowych" },
+        { q: "Proszę pokazać dowód (osobowy) ... .", a: "osobowy" },
+        { q: "Wypełnij kwestionariusz (osobowy) ... .", a: "osobowy" },
+        { q: "Ochrona danych (osobowy) ... jest bardzo ważna.", a: "osobowych" },
+        { q: "To są moje sprawy (osobowy) ... .", a: "osobowe" },
+        { q: "Kradzież danych (osobowy) ... to poważne przestępstwo.", a: "osobowych" },
+        { q: "Kupiłem nowy samochód (osobowy) ... .", a: "osobowy" }
+    ];
+
+    // Вправа 3: Тестовий варіант для схожих закінчень
+    const dataEx3 = [
+        { 
+            q: "Znam osobę o tym samym ...", 
+            opts: ["imieniu", "imienia", "imieniem", "imion"], 
+            a: "imieniu" 
+        },
+        { 
+            q: "Nie pamiętam ... tego autora.", 
+            opts: ["imię", "imienia", "imieniu", "imionami"], 
+            a: "imienia" 
+        },
+        { 
+            q: "Proszę podać swoje dane ...", 
+            opts: ["osobowy", "osobowe", "osobowych", "osobistego"], 
+            a: "osobowe" 
+        },
+        { 
+            q: "Ochrona danych ... jest wymagana prawem.", 
+            opts: ["osobowe", "osobowym", "osobowych", "osobowy"], 
+            a: "osobowych" 
+        },
+        { 
+            q: "Napisz list pod własnym ...", 
+            opts: ["imieniu", "imieniem", "imiona", "imion"], 
+            a: "imieniem" 
+        },
+        { 
+            q: "Wszyscy uczniowie wpisali swoje ... na liście.", 
+            opts: ["imion", "imionach", "imiona", "imionom"], 
+            a: "imiona" 
+        },
+        { 
+            q: "Legitymował się dowodem ...", 
+            opts: ["osobowy", "osobistym", "osobowym", "osobowe"], 
+            a: "osobistym" 
+        }
+    ];
+
+    function toggleModal(id, show) {
+        document.getElementById(id).style.display = show ? 'block' : 'none';
+        if(id === 'modalEx1' && show) renderEx1();
+        if(id === 'modalEx2' && show) renderEx2();
+        if(id === 'modalEx3' && show) renderEx3();
+    }
+
+    function renderEx1() {
+        const container = document.getElementById('ex1List');
+        container.innerHTML = dataEx1.map((item, i) => `
+            <div class="ex-item">
+                ${i+1}. ${item.q.replace('...', `<input type="text" class="ex-input" id="in1-${i}">`)}
+                <span id="fb1-${i}" class="feedback-icon"></span>
+            </div>
+        `).join('');
+    }
+
+    function renderEx2() {
+        const container = document.getElementById('ex2List');
+        container.innerHTML = dataEx2.map((item, i) => `
+            <div class="ex-item">
+                ${i+1}. ${item.q.replace('...', `<input type="text" class="ex-input" id="in2-${i}">`)}
+                <span id="fb2-${i}" class="feedback-icon"></span>
+            </div>
+        `).join('');
+    }
+
+    function renderEx3() {
+        const container = document.getElementById('ex3List');
+        container.innerHTML = dataEx3.map((item, i) => `
+            <div class="ex-item" style="flex-direction:column; align-items:flex-start;">
+                <div><b>${i+1}. ${item.q}</b></div>
+                <div style="margin-top:8px;">
+                    ${item.opts.map(opt => `
+                        <button class="option-btn opt3-${i}" onclick="selectOption3(${i}, '${opt}')">${opt}</button>
+                    `).join('')}
+                </div>
+                <input type="hidden" id="in3-${i}" value="">
+                <span id="fb3-${i}" class="feedback-icon" style="margin-top:5px;"></span>
+            </div>
+        `).join('');
+    }
+
+    function selectOption3(itemIdx, optValue) {
+        const btns = document.querySelectorAll(`.opt3-${itemIdx}`);
+        btns.forEach(b => b.classList.remove('selected'));
+        event.target.classList.add('selected');
+        document.getElementById(`in3-${itemIdx}`).value = optValue;
+    }
+
+    function checkEx1() {
+        dataEx1.forEach((item, i) => {
+            const val = document.getElementById(`in1-${i}`).value.toLowerCase().trim();
+            const fb = document.getElementById(`fb1-${i}`);
+            if(val === item.a) {
+                fb.innerHTML = "✅ Вірно!";
+                fb.style.color = "green";
+            } else {
+                fb.innerHTML = `❌ Помилка! Правильно: <b>${item.a}</b>`;
+                fb.style.color = "red";
+            }
+        });
+    }
+
+    function checkEx2() {
+        dataEx2.forEach((item, i) => {
+            const val = document.getElementById(`in2-${i}`).value.toLowerCase().trim();
+            const fb = document.getElementById(`fb2-${i}`);
+            if(val === item.a) {
+                fb.innerHTML = "✅ Вірно!";
+                fb.style.color = "green";
+            } else {
+                fb.innerHTML = `❌ Помилка! Правильно: <b>${item.a}</b>`;
+                fb.style.color = "red";
+            }
+        });
+    }
+
+    function checkEx3() {
+        dataEx3.forEach((item, i) => {
+            const val = document.getElementById(`in3-${i}`).value;
+            const fb = document.getElementById(`fb3-${i}`);
+            if(!val) {
+                fb.innerHTML = "⚠️ Оберіть варіант!";
+                fb.style.color = "orange";
+                return;
+            }
+            if(val === item.a) {
+                fb.innerHTML = "✅ Чудово!";
+                fb.style.color = "green";
+            } else {
+                fb.innerHTML = `❌ Помилка! Правильно: <b>${item.a}</b>`;
+                fb.style.color = "red";
+            }
+        });
+    }
+
+    function speak(text) {
+        if ('speechSynthesis' in window) {
+            const ut = new SpeechSynthesisUtterance(text);
+            ut.lang = 'pl-PL';
+            window.speechSynthesis.speak(ut);
+        }
+    }
+
+    function openExercise(specificWords = null) {
+        let words = specificWords || Array.from(document.querySelectorAll('#wordSelect input:checked')).map(i => i.value);
+        if(words.length === 0) return alert('Оберіть хоча б одне слово!');
+        document.getElementById('modal').style.display = 'block';
+        initTable(words);
+    }
+
+    function closeExercise() { document.getElementById('modal').style.display = 'none'; }
+
+    function initTable(words) {
+        const container = document.getElementById('tableContainer');
+        const bank = document.getElementById('wordBank');
+        bank.innerHTML = '';
+
+        let html = `<table style="font-size: 14px; width: 100%;"><tr><th style="padding: 8px;">Відмінок</th>`;
+        words.forEach(w => html += `<th style="padding: 8px;">${w}</th>`);
+        html += `</tr>`;
+
+        let allWords = [];
+        cases.forEach((c, cIdx) => {
+            html += `<tr><td style="font-weight:bold; background:#f8f9fa; padding: 6px; font-size: 13px; text-align:left;">${c}</td>`;
+            words.forEach(w => {
+                const correct = wordsDB[w][cIdx];
+                allWords.push(correct);
+                html += `<td style="padding: 4px;"><div class="drop-zone" data-ans="${correct}" ondrop="drop(event)" ondragover="allowDrop(event)"></div></td>`;
+            });
+            html += `</tr>`;
+        });
+        container.innerHTML = html + `</table>`;
+
+        allWords.sort(() => Math.random() - 0.5).forEach((w, i) => {
+            const div = document.createElement('div');
+            div.className = 'word';
+            div.draggable = true;
+            div.id = 'w-' + i;
+            div.textContent = w;
+            div.ondragstart = (e) => e.dataTransfer.setData("text", e.target.id);
+            bank.appendChild(div);
+        });
+    }
+
+    function allowDrop(ev) { ev.preventDefault(); }
+    
+    function drop(ev) {
+        ev.preventDefault();
+        const id = ev.dataTransfer.getData("text");
+        const el = document.getElementById(id);
+        const zone = ev.target.closest('.drop-zone');
+        if(!zone || zone.classList.contains('correct')) return;
+
+        if(el.textContent === zone.getAttribute('data-ans')) {
+            zone.innerHTML = `<span class="suffix">${el.textContent}</span>`;
+            zone.className = 'drop-zone correct';
+            el.classList.add('hidden');
+            speak(el.textContent);
+        } else {
+            zone.className = 'drop-zone wrong';
+            setTimeout(() => zone.className = 'drop-zone', 600);
+        }
+    }
+
+    function randomExercise() {
+        const keys = Object.keys(wordsDB);
+        const count = Math.floor(Math.random() * 2) + 1;
+        const selected = keys.sort(() => 0.5 - Math.random()).slice(0, count);
+        openExercise(selected);
+    }
+
+    function generateChallenge() {
+        const keys = Object.keys(wordsDB);
+        const word = keys[Math.floor(Math.random() * keys.length)];
+        const cIdx = Math.floor(Math.random() * cases.length);
+        const display = document.getElementById('challengeDisplay');
+        display.style.display = 'block';
+        display.innerHTML = `🔥 ЗАВДАННЯ: Утвори форму відмінка <b>"${cases[cIdx]}"</b> для слова <b>"${word}"</b>!`;
+        speak(`Utwórz przypadek ${cases[cIdx]} dla słowa ${word}`);
+    }
+
+    // Квіз
+    let quizStep = 0;
+    let quizScore = 0;
+
+    function openQuiz() {
+        quizStep = 0;
+        quizScore = 0;
+        document.getElementById('modalQuiz').style.display = 'block';
+        generateQuizQuestion();
+    }
+
+    function generateQuizQuestion() {
+        const container = document.getElementById('quizContainer');
+        const words = Array.from(document.querySelectorAll('#wordSelect input:checked')).map(i => i.value);
+        
+        if (quizStep >= 5) {
+            container.innerHTML = `
+                <div style="text-align:center; padding:20px;">
+                    <h2 style="color:var(--success)">Квіз завершено!</h2>
+                    <p style="font-size:22px;">Твій результат: <b style="color:var(--primary)">${quizScore}</b> з 5</p>
+                    <button class="check-btn" style="width:100%" onclick="openQuiz()">Повторити квіз ↻</button>
+                </div>`;
+            return;
+        }
+
+        if (words.length === 0) {
+            container.innerHTML = "<p>Оберіть хоча б одне слово зі списку на сторінці!</p>";
+            return;
+        }
+
+        quizStep++;
+        const word = words[Math.floor(Math.random() * words.length)];
+        const cIdx = Math.floor(Math.random() * cases.length);
+        const correct = wordsDB[word][cIdx];
+
+        let allForms = [...wordsDB[word]];
+        allForms.sort(() => Math.random() - 0.5);
+        let options = Array.from(new Set(allForms)).slice(0, 4);
+        if (!options.includes(correct)) options[0] = correct;
+        options.sort(() => Math.random() - 0.5);
+
+        container.innerHTML = `
+            <div style="display:flex; justify-content:space-between; color:#888; margin-bottom:10px">
+                <span>Питання: <b>${quizStep}/5</b></span>
+                <span>Бали: <b>${quizScore}</b></span>
+            </div>
+            <div style="font-size: 20px; margin: 15px 0; text-align: center; border-bottom: 2px solid #eee; padding-bottom:15px;">
+                Яка форма слова <b>"${word}"</b> для відмінка <br><span style="color:var(--blue); font-size:22px;">"${cases[cIdx]}"</span>?
+            </div>
+            <div id="quizOptions">
+                ${options.map(opt => `
+                    <button onclick="checkQuizAns(this, '${opt}', '${correct}')" 
+                            style="display:block; width:100%; padding:12px; margin:8px 0; border:2px solid #ddd; border-radius:10px; cursor:pointer; font-size:18px; transition:0.3s; background:white;">
+                        ${opt}
+                    </button>
+                `).join('')}
+            </div>
+            <div id="quizFeedback" style="text-align:center; font-weight:bold; margin:15px; font-size:18px; min-height:25px"></div>
+        `;
+    }
+
+    function checkQuizAns(btn, selected, correct) {
+        const feedback = document.getElementById('quizFeedback');
+        const buttons = document.querySelectorAll('#quizOptions button');
+        buttons.forEach(b => b.disabled = true);
+
+        if (selected === correct) {
+            quizScore++;
+            btn.style.background = "#d4edda";
+            btn.style.borderColor = "#27ae60";
+            feedback.innerHTML = "✅ Świetnie!";
+            feedback.style.color = "#27ae60";
+        } else {
+            btn.style.background = "#f8d7da";
+            btn.style.borderColor = "#e74c3c";
+            feedback.innerHTML = `❌ Помилка! Правильно: <span style="font-size:20px">${correct}</span>`;
+            feedback.style.color = "#e74c3c";
+            buttons.forEach(b => {
+                if (b.innerText.trim() === correct) {
+                    b.style.borderColor = "#27ae60";
+                    b.style.background = "#f0fff4";
+                }
+            });
+        }
+
+        speak(selected);
+
+        setTimeout(() => {
+            generateQuizQuestion();
+        }, 1500);
+    }
+</script>
+
+</body>
+</html>
