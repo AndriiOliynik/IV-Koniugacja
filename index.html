@@ -3,437 +3,430 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IV Koniugacja: Повний довідник та тренажер</title>
+    <title>Платформа вивчення польської мови</title>
     <style>
-        :root { --primary: #e74c3c; --secondary: #2c3e50; --bg: #f4f7f6; --success: #27ae60; --blue: #3498db; --gold: #f1c40f; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; line-height: 1.6; }
-        
-        header { background: var(--secondary); color: white; padding: 40px 20px; text-align: center; border-bottom: 5px solid var(--primary); }
-        .container { max-width: 1000px; margin: -40px auto 40px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        
-        .theory-box { background: #fff3f3; border-left: 5px solid var(--primary); padding: 20px; margin: 20px 0; border-radius: 8px; }
-        .full-list-box { background: #eef2f7; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #d1d9e6; }
-        .suffix { color: var(--primary); font-weight: bold; }
+        :root {
+            --primary: #1e293b;
+            --secondary: #334155;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #16a34a;
+        }
 
-        .verb-selection { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 25px 0; }
-        .verb-item { display: flex; align-items: center; background: #f9f9f9; padding: 12px; border-radius: 8px; cursor: pointer; border: 1px solid #eee; transition: 0.2s; }
-        .verb-item:hover { border-color: var(--primary); background: #fff; }
-        .verb-item input { margin-right: 12px; width: 18px; height: 18px; cursor: pointer; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-        .btn-main { flex: 2; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; transition: 0.3s; min-width: 250px; }
-        .btn-random { flex: 1; background: var(--success); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; min-width: 150px; }
-        .btn-challenge { flex: 1; background: var(--gold); color: #333; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; min-width: 150px; }
-        .btn-blue { flex: 1; background: var(--blue); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; min-width: 150px; transition: 0.3s; }
-        
-        .btn-main:hover, .btn-random:hover, .btn-challenge:hover, .btn-blue:hover { opacity: 0.9; transform: translateY(-2px); }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
 
-        #modal, #modalEx1, #modalEx2 { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; }
-        .modal-content { background: white; width: 95%; max-width: 1100px; margin: 30px auto; padding: 25px; border-radius: 15px; height: 85vh; overflow-y: auto; position: relative; }
-        .close-btn { position: absolute; right: 20px; top: 10px; font-size: 35px; cursor: pointer; color: #666; }
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
 
-        .word-bank { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; padding: 20px; background: #f0f2f5; border-radius: 10px; min-height: 60px; justify-content: center; }
-        .word { padding: 8px 16px; background: white; border: 2px solid var(--primary); border-radius: 20px; cursor: grab; font-weight: 500; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .word.hidden { visibility: hidden; }
-        
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th { background: var(--secondary); color: white; padding: 12px; font-size: 14px; }
-        td { border: 1px solid #dee2e6; padding: 8px; width: 150px; }
-        .drop-zone { height: 45px; border: 1px dashed #ccc; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .correct { background: #d4edda !important; border: 2px solid var(--success) !important; font-weight: bold; }
-        .wrong { background: #f8d7da !important; border: 2px solid var(--primary) !important; }
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
 
-        .music-section { margin-top: 40px; padding: 20px; background: #eef2f7; border-radius: 12px; }
-        .song-link { display: block; margin: 10px 0; color: var(--blue); text-decoration: none; font-weight: 500; }
-        .song-link:hover { text-decoration: underline; }
-        .song-link:before { content: "🎬 "; }
+        header p {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            max-width: 700px;
+            margin: 0 auto;
+        }
 
-        #challengeDisplay { margin-top: 20px; padding: 15px; background: #fff9e6; border: 2px dashed var(--gold); border-radius: 10px; display: none; text-align: center; font-size: 18px; font-weight: bold; color: #5d4037; }
+        /* NAVIGATION BAR */
+        nav {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
 
-        /* Стилі для вправ з картинки */
-        .ex-item { margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .ex-input { padding: 8px; border: 2px solid #ddd; border-radius: 6px; width: 120px; font-size: 16px; text-align: center; }
-        .ex-input:focus { border-color: var(--blue); outline: none; }
-        .check-btn { background: var(--secondary); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; font-weight: bold; }
-        .feedback-icon { font-weight: bold; }
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .nav-brand {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: #eff6ff;
+            color: var(--accent);
+        }
+
+        /* MAIN CONTENT */
+        main {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-header {
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+        }
+
+        /* GRID OF EXERCISES */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+            border-color: #bfdbfe;
+        }
+
+        .card-tag {
+            align-self: flex-start;
+            padding: 4px 10px;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .card-meta {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 12px;
+            background-color: var(--accent);
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* IFRAME WORKSPACE */
+        #workspace {
+            display: none;
+            margin-top: 30px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .workspace-header {
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .workspace-header h3 {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .btn-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .btn-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        iframe {
+            width: 100%;
+            height: 780px;
+            border: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>IV Koniugacja: Повний довідник та тренажер</h1>
-    <h2>До цієї групи належать дієслова, які в формі ja закінчуються на -em, а в формі ty на -esz. </h2>
-    <p>Важливо: Не плутайте з I кон'югацією (-am, -asz). Тут ключова літера — E!</p>
-    <p>Ексклюзивна група дієслів на -em, -esz</p>
-</header>
+    <!-- HEADER -->
+    <header>
+        <h1>Інтерактивний тренажер ділової польської мови</h1>
+        <p>Навчальний комплекс для практики заповнення офіційних документів, складного анкетування та професійної термінології.</p>
+    </header>
 
-<div class="container">
-    <div class="theory-box">
-        <h2>Повний список дієслів IV кон'югації</h2>
-        <p>Ця група унікальна — до неї входять лише 4 основні корені та їхні префіксальні форми:</p>
-        <div class="full-list-box">
-            <strong>1. Jeść</strong> (та всі на <em>-jeść</em>: zjeść, dojeść, wyjeść, przejeść się)<br>
-            <strong>2. Wiedzieć</strong> (та всі на <em>-wiedzieć</em>: powiedzieć, відповідісти, opowiedzieć, dowiedzieć się)<br>
-            <strong>3. Umieć</strong> (вміти та його доконана форма naumiać się)<br>
-            <strong>4. Rozumieć</strong> (розуміти та зрозуміти - zrozumieć)<br>
-            <strong>5. Śmieć</strong> (сміти/наважуватися)
-        </div>
-    </div>
-
-    <h3>Оберіть дієслова для вправи:</h3>
-    <div class="verb-selection" id="verbSelect">
-        <label class="verb-item"><input type="checkbox" value="jeść" checked> <strong>jeść</strong></label>
-        <label class="verb-item"><input type="checkbox" value="wiedzieć" checked> <strong>wiedzieć</strong></label>
-        <label class="verb-item"><input type="checkbox" value="umieć" checked> <strong>umieć</strong></label>
-        <label class="verb-item"><input type="checkbox" value="rozumieć" checked> <strong>rozumieć</strong></label>
-        <label class="verb-item"><input type="checkbox" value="zjeść"> zjeść</label>
-        <label class="verb-item"><input type="checkbox" value="powiedzieć"> powiedzieć</label>
-        <label class="verb-item"><input type="checkbox" value="opowiedzieć"> opowiedzieć</label>
-        <label class="verb-item"><input type="checkbox" value="śmieć"> śmieć</label>
-    </div>
-
-    <div class="btn-group">
-        <button class="btn-main" onclick="openExercise()">Почати обрану вправу →</button>
-        <button class="btn-random" onclick="randomExercise()">🎲 Випадкові 1-4 дієслова</button>
-        <button class="btn-challenge" onclick="generateChallenge()">🔥 Виклик-завдання</button>
-        <button class="btn-blue" onclick="toggleModal('modalEx1', true)">📝 Вправа 1 (Займенники)</button>
-        <button class="btn-blue" onclick="toggleModal('modalEx2', true)">📝 Вправа 2 (Дієслова)</button>
-<button class="btn-quiz" style="flex: 1; background: #9b59b6; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; min-width: 150px;" onclick="openQuiz()">📝 Квіз (одне дієслово)</button>
-    </div>
-
-    <div id="challengeDisplay"></div>
-
-    <div class="music-section">
-        <h3>🎧 Навчання через музику (Працюючі посилання):</h3>
-        <a href="https://www.youtube.com/watch?v=ZuHakRzq5yE" target="_blank" class="song-link">Mrozu - Nic do stracenia (слухайте слово "wiem")</a>
-        <a href="https://www.youtube.com/watch?v=n3Hv-1MWz2Y" target="_blank" class="song-link">Enej - Skrzydlate ręce (дієслова в тексті)</a>
-        <a href="https://www.youtube.com/watch?v=hHb3owr6PQg" target="_blank" class="song-link">Sanah - Ale jazz! (занурення в мову)</a>
-        <a href="https://www.youtube.com/watch?v=nTc_PBik_nU" target="_blank" class="song-link">Perfect - Chciałbym быть собою (слухайте "Nie umiem...")</a>
-        <a href="https://www.youtube.com/watch?v=I8NcELiIMHg" target="_blank" class="song-link">Kult - Gdy nie ma дітей (слухайте "Jemy...")</a>
-    </div>
-</div>
-
-<div id="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeExercise()">&times;</span>
-        <h2 id="modalTitle">Тренажер таблиць</h2>
-        <div class="word-bank" id="wordBank"></div>
-        <div id="tableContainer" style="overflow-x: auto;"></div>
-    </div>
-</div>
-
-<div id="modalEx1">
-    <div class="modal-content">
-        <span class="close-btn" onclick="toggleModal('modalEx1', false)">&times;</span>
-        <h2>Вправа 1: Впишіть особові займенники</h2>
-        <p><i>(ja, ty, on, ona, ono, my, wy, oni, one)</i></p>
-        <div id="ex1List"></div>
-        <button class="check-btn" onclick="checkEx1()">Перевірити відповіді</button>
-    </div>
-</div>
-
-<div id="modalEx2">
-    <div class="modal-content">
-        <span class="close-btn" onclick="toggleModal('modalEx2', false)">&times;</span>
-        <h2>Вправа 2: Відмінювання дієслів</h2>
-        <div id="ex2List"></div>
-        <button class="check-btn" onclick="checkEx2()">Перевірити відповіді</button>
-    </div>
-</div>
-
-<script>
-    const verbsDB = {
-        'jeść': ['jem', 'jesz', 'je', 'jemy', 'jecie', 'jedzą'],
-        'wiedzieć': ['wiem', 'wiesz', 'wie', 'wiemy', 'wiecie', 'wiedzą'],
-        'zjeść': ['zjem', 'zjesz', 'zje', 'zjemy', 'zjecie', 'zjedzą'],
-        'powiedzieć': ['powiem', 'powiesz', 'powie', 'powiemy', 'powiecie', 'powiedzą'],
-        'opowiedzieć': ['opowiem', 'opowiesz', 'opowie', 'opowiemy', 'opowiecie', 'opowiedzą'],
-        'umieć': ['umiem', 'umiesz', 'umie', 'umiemy', 'umiecie', 'umieją'],
-        'rozumieć': ['rozumiem', 'rozumiesz', 'rozumie', 'rozumiemy', 'rozumiecie', 'rozumieją'],
-        'śmieć': ['śmiem', 'śmiesz', 'śmie', 'śmiemy', 'śmiecie', 'śmieją']
-    };
-    const pronouns = ['ja', 'ty', 'on/ona/ono', 'my', 'wy', 'oni/one'];
-    const ukrPronouns = ['я', 'ти', 'він/вона/воно', 'ми', 'ви', 'вони'];
-
-    // Дані для вправ з картинки
-    const dataEx1 = [
-        { q: "... nie rozumie.", a: ["on", "ona", "ono"] },
-        { q: "... mieszkamy w Krakowie.", a: ["my"] },
-        { q: "Gdzie ... mieszkasz?", a: ["ty"] },
-        { q: "... pytają.", a: ["oni", "one"] },
-        { q: "... czytam gazetę.", a: ["ja"] },
-        { q: "... mieszkam w centrum.", a: ["ja"] },
-        { q: "Jak ... się nazywacie?", a: ["wy"] },
-        { q: "... przepraszam.", a: ["ja"] },
-        { q: "... не розумію (nie rozumiem).", a: ["ja"] },
-        { q: "... не розумієш (nie rozumiesz)?", a: ["ty"] },
-        { q: "... ma na imię Aneta.", a: ["ona"] },
-        { q: "... nazywa się Kowalski.", a: ["on"] }
-    ];
-
-    const dataEx2 = [
-        { q: "Gdzie (ty) ... ?", v: "mieszkać", a: "mieszkasz" },
-        { q: "Gdzie oni ... ?", v: "mieszkać", a: "mieszkają" },
-        { q: "Co pan ... ?", v: "czytać", a: "czyta" },
-        { q: "Jak (wy) się ... ?", v: "nazywać", a: "nazywacie" },
-        { q: "(my) ... gazetę.", v: "czytać", a: "czytamy" },
-        { q: "On ...", v: "pytać", a: "pyta" },
-        { q: "(ja) Nie ...", v: "rozumieć", a: "rozumiem" },
-        { q: "Co państwo ... ?", v: "czytać", a: "czytają" },
-        { q: "Jak się pani ... ?", v: "mieть", a: "ma" },
-        { q: "(ja) ... w centrum.", v: "mieszkać", a: "mieszkam" },
-        { q: "Czy państwo ... w Warszawie?", v: "mieszkać", a: "mieszkają" },
-        { q: "Gdzie ona ... ?", v: "mieszkać", a: "mieszka" }
-    ];
-
-    function toggleModal(id, show) {
-        document.getElementById(id).style.display = show ? 'block' : 'none';
-        if(id === 'modalEx1' && show) renderEx1();
-        if(id === 'modalEx2' && show) renderEx2();
-    }
-
-    function renderEx1() {
-        const container = document.getElementById('ex1List');
-        container.innerHTML = dataEx1.map((item, i) => `
-            <div class="ex-item">
-                ${i+1}. <input type="text" class="ex-input" id="in1-${i}"> ${item.q}
-                <span id="fb1-${i}" class="feedback-icon"></span>
+    <!-- NAVIGATION BAR -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-brand" onclick="showDashboard()">
+                🇵🇱 Język Polski Użytkowy
             </div>
-        `).join('');
-    }
+            <ul class="nav-links" id="nav-list">
+                <!-- Динамічно заповнюється з JS -->
+            </ul>
+        </div>
+    </nav>
 
-    function renderEx2() {
-        const container = document.getElementById('ex2List');
-        container.innerHTML = dataEx2.map((item, i) => `
-            <div class="ex-item">
-                ${i+1}. ${item.q.replace('...', `<input type="text" class="ex-input" id="in2-${i}">`)} (${item.v})
-                <span id="fb2-${i}" class="feedback-icon"></span>
+    <!-- MAIN DASHBOARD -->
+    <main>
+        <div id="dashboard-view">
+            <div class="section-header">
+                <h2>Оберіть модуль тренування</h2>
+                <p>Усі вправи містять автоматичну перевірку, підказки з граматики та роз'яснення складних слів.</p>
             </div>
-        `).join('');
-    }
 
-    function checkEx1() {
-        dataEx1.forEach((item, i) => {
-            const val = document.getElementById(`in1-${i}`).value.toLowerCase().trim();
-            const fb = document.getElementById(`fb1-${i}`);
-            fb.innerHTML = item.a.includes(val) ? "✅" : "❌ (" + item.a[0] + ")";
-            fb.style.color = item.a.includes(val) ? "green" : "red";
-        });
-    }
-
-    function checkEx2() {
-        dataEx2.forEach((item, i) => {
-            const val = document.getElementById(`in2-${i}`).value.toLowerCase().trim();
-            const fb = document.getElementById(`fb2-${i}`);
-            fb.innerHTML = val === item.a ? "✅" : "❌ (" + item.a + ")";
-            fb.style.color = val === item.a ? "green" : "red";
-        });
-    }
-
-    // Початкові функції без змін
-    function speak(text) {
-        const ut = new SpeechSynthesisUtterance(text);
-        ut.lang = 'pl-PL';
-        window.speechSynthesis.speak(ut);
-    }
-
-    function openExercise(specificVerbs = null) {
-        let verbs = specificVerbs || Array.from(document.querySelectorAll('#verbSelect input:checked')).map(i => i.value);
-        if(verbs.length === 0) return alert('Виберіть хоча б одне дієслово!');
-        document.getElementById('modal').style.display = 'block';
-        initTable(verbs);
-    }
-
-    function closeExercise() { document.getElementById('modal').style.display = 'none'; }
-
-    function initTable(verbs) {
-    const container = document.getElementById('tableContainer');
-    const bank = document.getElementById('wordBank');
-    bank.innerHTML = '';
-    
-    // Зменшуємо відступи у банку слів
-    bank.style.padding = "10px";
-    bank.style.gap = "5px";
-
-    let html = `<table style="font-size: 14px; width: 100%;"><tr><th style="padding: 5px;">Особа</th>`;
-    verbs.forEach(v => html += `<th style="padding: 5px;">${v}</th>`);
-    html += `</tr>`;
-
-    let allWords = [];
-    pronouns.forEach((p, pIdx) => {
-        html += `<tr><td style="font-weight:bold; background:#f8f9fa; padding: 4px; font-size: 13px;">${p}</td>`;
-        verbs.forEach(v => {
-            const correct = verbsDB[v][pIdx];
-            allWords.push(correct);
-            // Зменшуємо висоту зони скидання (drop-zone) з 45px до 35px
-            html += `<td style="padding: 2px;"><div class="drop-zone" data-ans="${correct}" ondrop="drop(event)" ondragover="allowDrop(event)" style="height: 35px; font-size: 14px;"></div></td>`;
-        });
-        html += `</tr>`;
-    });
-    container.innerHTML = html + `</table>`;
-
-    allWords.sort(() => Math.random() - 0.5).forEach((w, i) => {
-        const div = document.createElement('div');
-        div.className = 'word';
-        // Зменшуємо розмір плашок зі словами
-        div.style.padding = "5px 10px";
-        div.style.fontSize = "13px";
-        div.draggable = true;
-        div.id = 'w-' + i;
-        div.textContent = w;
-        div.ondragstart = (e) => e.dataTransfer.setData("text", e.target.id);
-        bank.appendChild(div);
-    });
-}
-
-    function allowDrop(ev) { ev.preventDefault(); }
-    function drop(ev) {
-        ev.preventDefault();
-        const id = ev.dataTransfer.getData("text");
-        const el = document.getElementById(id);
-        const zone = ev.target.closest('.drop-zone');
-        if(!zone || zone.classList.contains('correct')) return;
-
-        if(el.textContent === zone.getAttribute('data-ans')) {
-            zone.innerHTML = el.textContent.replace(/(em|esz|e|emy|ecie|dzą|ją)$/, '<span class="suffix">$1</span>');
-            zone.className = 'drop-zone correct';
-            el.classList.add('hidden');
-            speak(el.textContent);
-        } else {
-            zone.className = 'drop-zone wrong';
-            setTimeout(() => zone.className = 'drop-zone', 600);
-        }
-    }
-
-    function randomExercise() {
-        const keys = Object.keys(verbsDB);
-        const count = Math.floor(Math.random() * 4) + 1;
-        const selected = keys.sort(() => 0.5 - Math.random()).slice(0, count);
-        openExercise(selected);
-    }
-
-    function generateChallenge() {
-        const keys = Object.keys(verbsDB);
-        const verb = keys[Math.floor(Math.random() * keys.length)];
-        const pIdx = Math.floor(Math.random() * pronouns.length);
-        const display = document.getElementById('challengeDisplay');
-        display.style.display = 'block';
-        display.innerHTML = `🔥 ЗАВДАННЯ: Склади речення з формою "${pronouns[pIdx]}" (${ukrPronouns[pIdx]}) для дієслова "${verb}"!`;
-        speak(`Jak powiesz: ${pronouns[pIdx]} і дієслово ${verb}?`);
-    }
-let quizStep = 0;
-let quizScore = 0;
-
-function openQuiz() {
-    quizStep = 0;
-    quizScore = 0;
-    document.getElementById('modalQuiz').style.display = 'block';
-    generateQuizQuestion();
-}
-
-function generateQuizQuestion() {
-    const container = document.getElementById('quizContainer');
-    const verbs = Array.from(document.querySelectorAll('#verbSelect input:checked')).map(i => i.value);
-    
-    if (quizStep >= 10) {
-        container.innerHTML = `
-            <div style="text-align:center; padding:20px;">
-                <h2 style="color:var(--success)">Квіз завершено!</h2>
-                <p style="font-size:22px;">Твій результат: <b style="color:var(--primary)">${quizScore}</b> з 10</p>
-                <button class="check-btn" style="width:100%" onclick="openQuiz()">Повторити квіз ↻</button>
-            </div>`;
-        return;
-    }
-
-    if (verbs.length === 0) {
-        container.innerHTML = "<p>Оберіть дієслова на сторінці!</p>";
-        return;
-    }
-
-    quizStep++;
-    const verb = verbs[Math.floor(Math.random() * verbs.length)];
-    const pIdx = Math.floor(Math.random() * pronouns.length);
-    const correct = verbsDB[verb][pIdx];
-
-    let allForms = [...verbsDB[verb]];
-    allForms.sort(() => Math.random() - 0.5);
-    let options = allForms.slice(0, 4);
-    if (!options.includes(correct)) options[0] = correct;
-    options.sort(() => Math.random() - 0.5);
-
-    // Функція для підсвітки закінчення (червоним кольором як у твоїй таблиці)
-    const highlight = (word) => {
-        return word.replace(/(em|esz|e|emy|ecie|dzą|ją)$/, '<span style="color:#e74c3c; font-weight:bold;">$1</span>');
-    };
-
-    container.innerHTML = `
-        <div style="display:flex; justify-content:space-between; color:#888; margin-bottom:10px">
-            <span>Питання: <b>${quizStep}/10</b></span>
-            <span>Бали: <b>${quizScore}</b></span>
+            <!-- ГРІД ВПРАВ (ГЕНЕРУЄТЬСЯ АВТОМАТИЧНО) -->
+            <div class="grid" id="exercise-grid"></div>
         </div>
-        <div style="font-size: 22px; margin: 15px 0; text-align: center; border-bottom: 2px solid #eee; padding-bottom:15px;">
-            Яка форма <b>${verb}</b> для <br><span style="color:var(--blue); font-size:26px;">"${pronouns[pIdx]}"</span>?
-        </div>
-        <div id="quizOptions">
-            ${options.map(opt => `
-                <button onclick="checkQuizAns(this, '${opt}', '${correct}')" 
-                        style="display:block; width:100%; padding:15px; margin:10px 0; border:2px solid #ddd; border-radius:12px; cursor:pointer; font-size:19px; transition:0.3s; background:white;">
-                    ${highlight(opt)}
-                </button>
-            `).join('')}
-        </div>
-        <div id="quizFeedback" style="text-align:center; font-weight:bold; margin:15px; font-size:18px; min-height:25px"></div>
-    `;
-}
 
-function checkQuizAns(btn, selected, correct) {
-    const feedback = document.getElementById('quizFeedback');
-    const buttons = document.querySelectorAll('#quizOptions button');
-    
-    // Блокуємо всі кнопки, щоб не натискали двічі
-    buttons.forEach(b => b.disabled = true);
+        <!-- WORKSPACE (IFRAME) -->
+        <div id="workspace">
+            <div class="workspace-header">
+                <h3 id="workspace-title">Назва вправи</h3>
+                <button class="btn-close" onclick="showDashboard()">✕ Закрити / На головну</button>
+            </div>
+            <iframe id="exercise-frame" src=""></iframe>
+        </div>
+    </main>
 
-    if (selected === correct) {
-        quizScore++;
-        btn.style.background = "#d4edda";
-        btn.style.borderColor = "#27ae60";
-        feedback.innerHTML = "✅ Świetnie!";
-        feedback.style.color = "#27ae60";
-    } else {
-        btn.style.background = "#f8d7da";
-        btn.style.borderColor = "#e74c3c";
-        feedback.innerHTML = `❌ Помилка! Правильно: <span style="font-size:22px">${correct}</span>`;
-        feedback.style.color = "#e74c3c";
-        // Підсвічуємо правильну відповідь зеленим
-        buttons.forEach(b => {
-            if (b.innerText.trim() === correct) {
-                b.style.borderColor = "#27ae60";
-                b.style.background = "#f0fff4";
+    <footer>
+        <p>© 2026 Навчальний інтерактивний тренажер. Створено для вивчення офіційної та ділової польської мови.</p>
+    </footer>
+
+    <script>
+        // =========================================================================
+        // ⚙️ РЕЄСТР ВПРАВ (Щоб додати нову вправу — просто додайте об'єкт у цей масив)
+        // =========================================================================
+        const exercises = [
+            {
+                id: 'v1',
+                moduleTag: 'Модуль 1',
+                title: 'Kwestionariusz Osobowy',
+                description: 'Інтерактивне заповнення особової анкети (імена, сімейний стан, освіта, професії) з перевіркою граматики.',
+                time: '~10 хв',
+                info: '13 полів',
+                file: 'kwestionariusz_trener.html' // Назва HTML-файлу вправи
+            },
+            {
+                id: 'v2',
+                moduleTag: 'Модуль 2',
+                title: 'IV Koniugacja',
+                description: 'Повний довідник та тренажер',
+                time: '~10 хв',
+                info: '10 питань',
+                file: 'index_01.html'
+            },
+            {
+                id: 'v3',
+                moduleTag: 'Модуль 3',
+                title: 'Граматика іменників та прикметників',
+                description: 'Imię & Osobowy',
+                time: '~15 хв',
+                info: '8 завдань',
+                file: 'index_02.html'
             }
-        });
-    }
+            /* 
+            🛠 ЩОБ ДОДАТИ НОВУ ВПРАВУ 4, ПРОСТО РЕЗКОМЕНТУЙТЕ ТА ЗМІНІТЬ:
+            ,{
+                id: 'v4',
+                moduleTag: 'Модуль 4',
+                title: 'Назва вашої нової вправи',
+                description: 'Опис нової вправи або завдання.',
+                time: '~12 хв',
+                info: '5 завдань',
+                file: 'vprava_4.html'
+            }
+            */
+        ];
 
-    speak(selected);
+        // =========================================================================
+        // 🚀 ГЕНЕРАЦІЯ ІНТЕРФЕЙСУ ТА ЛОГІКА НАВІГАЦІЇ
+        // =========================================================================
 
-    // Автоматичний перехід до наступного питання через 1.5 секунди
-    setTimeout(() => {
-        // Додаємо ефект зникнення перед зміною питання (опціонально)
-        document.getElementById('quizContainer').style.opacity = "0.3";
-        setTimeout(() => {
-            document.getElementById('quizContainer').style.opacity = "1";
-            generateQuizQuestion();
-        }, 200);
-    }, 1500);
-}
-</script>
-<div id="modalQuiz" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000;">
-    <div class="modal-content" style="background: white; width: 95%; max-width: 600px; margin: 30px auto; padding: 25px; border-radius: 15px; position: relative;">
-        <span class="close-btn" onclick="document.getElementById('modalQuiz').style.display='none'">&times;</span>
-        <h2 style="text-align:center">Квіз: Одна основа</h2>
-        <div id="quizContainer"></div>
-        <button class="check-btn" style="width:100%" onclick="generateQuizQuestion()">Наступне запитання ↻</button>
-    </div>
-</div>
+        function renderApp() {
+            const grid = document.getElementById('exercise-grid');
+            const navList = document.getElementById('nav-list');
 
+            grid.innerHTML = '';
+            navList.innerHTML = `<li><a id="nav-home" class="active" onclick="showDashboard()">Головна</a></li>`;
+
+            exercises.forEach((ex, index) => {
+                // 1. Рендеримо картки вправ у гріда
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <span class="card-tag">${ex.moduleTag}</span>
+                    <h3>${ex.title}</h3>
+                    <p>${ex.description}</p>
+                    <div class="card-meta">
+                        <span>⏱ ${ex.time}</span>
+                        <span>📊 ${ex.info}</span>
+                    </div>
+                    <button class="btn" onclick="openExercise('${ex.id}')">Запустити вправу</button>
+                `;
+                grid.appendChild(card);
+
+                // 2. Рендеримо пункти в меню
+                const navLi = document.createElement('li');
+                navLi.innerHTML = `<a id="nav-${ex.id}" onclick="openExercise('${ex.id}')">${ex.moduleTag}</a>`;
+                navList.appendChild(navLi);
+            });
+        }
+
+        function openExercise(id) {
+            const ex = exercises.find(item => item.id === id);
+            if (!ex) return;
+
+            const dashboard = document.getElementById('dashboard-view');
+            const workspace = document.getElementById('workspace');
+            const iframe = document.getElementById('exercise-frame');
+            const title = document.getElementById('workspace-title');
+
+            dashboard.style.display = 'none';
+            workspace.style.display = 'block';
+
+            iframe.src = ex.file;
+            title.innerText = `${ex.moduleTag}: ${ex.title}`;
+
+            // Оновлюємо активні посилання в навігації
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            const activeNav = document.getElementById(`nav-${id}`);
+            if (activeNav) activeNav.classList.add('active');
+
+            workspace.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showDashboard() {
+            const dashboard = document.getElementById('dashboard-view');
+            const workspace = document.getElementById('workspace');
+            const iframe = document.getElementById('exercise-frame');
+
+            workspace.style.display = 'none';
+            dashboard.style.display = 'block';
+            iframe.src = '';
+
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            document.getElementById('nav-home').classList.add('active');
+        }
+
+        // Запуск генерації при завантаженні сторінки
+        window.onload = renderApp;
+    </script>
 </body>
 </html>
